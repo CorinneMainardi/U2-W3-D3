@@ -1,3 +1,4 @@
+const localStorageKey = "bookCart-memory";
 const getBooks = () => {
   fetch("https://striveschool-api.herokuapp.com/books", {})
     .then((response) => {
@@ -21,7 +22,7 @@ const getBooks = () => {
      <div class="card">
               <img
                 src="${book.img}"
-                class="card-img-top" heigth="100"
+                class="card-img-top" heigth="70"
                 alt="immagine copertina libro"
               />
               <div class="card-body">
@@ -41,10 +42,47 @@ const getBooks = () => {
         removeBtn.addEventListener("click", () => {
           newCol.remove();
         });
+        buyBtn.addEventListener("click", () => {
+          addBookToChart(book);
+        });
       });
     })
     .catch((error) => {
       console.log(error);
     });
+};
+const addBookToChart = (book) => {
+  let booksInLocalStorage = localStorage.getItem(localStorageKey);
+  //controllo che non ci siano libri in localStorage
+  if (!booksInLocalStorage) {
+    booksInLocalStorage = [];
+  } else {
+    booksInLocalStorage = JSON.parse(booksInLocalStorage);
+  }
+  booksInLocalStorage.push(book);
+
+  localStorage.setItem(localStorageKey, JSON.stringify(booksInLocalStorage));
+
+  console.log("Libro aggiunto:", book);
+  console.log("Array di libri inseriti:", booksInLocalStorage);
+};
+const cart = () => {
+  const cartDropDown = document.getElementById("dropdown-menu");
+  cartDropDown.innerHTML = ""; //CARELLO VUOTO
+  const booksInLocalStorage = JSON.parse(localStorage.getItem(localStorageKey)) || [];
+  if (booksInLocalStorage.length === 0) {
+    cartDropDown.innerHTML = "<li class='dropdown-item'>Il carrello è vuoto</li>";
+    return;
+  }
+  booksInLocalStorage.forEach((book) => {
+    const li = document.createElement("li");
+    li.className = "dropdown-item";
+    li.innerHTML = `${book.title} - ${book.price} <button class="btn bg-danger binBtn" data-index="${index}">
+        <i class="fas fa-trash-alt"></i>
+      </button>`;
+    cartDropDown.appendChild(li);
+  });
+  const binBtn = cartDropDown.querySelectorAll(".binBtn");
+  binBtn.forEach(btn);
 };
 getBooks();
