@@ -35,8 +35,8 @@ const getBooks = () => {
               </div>
     `;
         booksRow.appendChild(newCol);
-        const buyBtn = document.querySelector(".buyBtn");
-        const removeBtn = document.querySelector(".removeBtn");
+        const buyBtn = newCol.querySelector(".buyBtn");
+        const removeBtn = newCol.querySelector(".removeBtn");
 
         removeBtn.addEventListener("click", () => {
           newCol.remove();
